@@ -26,7 +26,6 @@
                                     <small class="text-sm text-gray-600"> &middot; {{ __('edited') }}</small>
                                 @endunless
                             </div>
-                            @if ($chirp->user->is(auth()->user()))
                                 <x-dropdown>
                                     <x-slot name="trigger">
                                         <button>
@@ -36,20 +35,40 @@
                                         </button>
                                     </x-slot>
                                     <x-slot name="content">
-                                        <x-dropdown-link :href="route('chirps.edit', $chirp)">
-                                            {{ __('Edit') }}
-                                        </x-dropdown-link>
-                                        <form method="POST" action="{{ route('chirps.destroy', $chirp) }}">
-                                            @csrf
-                                            @method('delete')
-                                            <x-dropdown-link :href="route('chirps.destroy', $chirp)" onclick="event.preventDefault(); this.closest('form').submit();">
-                                                {{ __('Delete') }}
+                                        @if ($chirp->user->is(auth()->user()))
+                                            <x-dropdown-link :href="route('chirps.edit', $chirp)">
+                                                {{ __('Edit') }}
                                             </x-dropdown-link>
-                                        </form>
+                                            <form method="POST" action="{{ route('chirps.destroy', $chirp) }}">
+                                                @csrf
+                                                @method('delete')
+                                                <x-dropdown-link :href="route('chirps.destroy', $chirp)" onclick="event.preventDefault(); this.closest('form').submit();">
+                                                    {{ __('Delete') }}
+                                                </x-dropdown-link>
+                                            </form>
+                                        @else
+                                            @if (!auth()->user()->followings->contains($chirp->user))
+                                            <form method="POST" action="{{ route('profile.follow', $chirp->user) }}">
+                                                @csrf 
+                                                <x-dropdown-link :href="route('profile.follow', $chirp->user)"
+                                                                    onclick="event.preventDefault(); this.closest('form').submit();">
+                                                    {{ __('Follow') }}
+                                                </x-dropdown-link>
+                                            </form>
+                                            @else
+                                            <form method="POST" action="{{ route('profile.unfollow', $chirp->user) }}">
+                                                @csrf 
+                                                @method('delete')
+                                                <x-dropdown-link :href="route('profile.unfollow', $chirp->user)"
+                                                                    onclick="event.preventDefault(); this.closest('form').submit();">
+                                                    {{ __('Unfollow') }}
+                                                </x-dropdown-link>
+                                            @endif
+                                        @endif
+                                        
                                     </x-slot>
                                 </x-dropdown>
-                            @endif
-                        </div>
+                            </div>
                         <p class="mt-4 text-lg text-gray-900">{{ $chirp->message }}</p>
                     </div>
                 </div>

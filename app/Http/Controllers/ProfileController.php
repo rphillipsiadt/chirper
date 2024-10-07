@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -56,5 +57,21 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Follow a user
+     */
+    public function follow(Request $request, User $user): RedirectResponse{
+        $request->user()->followings()->attach($user);
+        return Redirect::back();
+    }
+
+    /**
+     * Unfollow a user
+     */
+    public function unfollow(Request $request, User $user): RedirectResponse{
+        $request->user()->followings()->detach($user);
+        return Redirect::back();
     }
 }
