@@ -74,4 +74,13 @@ class ProfileController extends Controller
         $request->user()->followings()->detach($user);
         return Redirect::back();
     }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function followings(Request $request): View{
+        return view('following.index', [
+            'followings' => $request->user()->followings,
+        ]);
+    }
 }

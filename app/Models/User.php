@@ -52,14 +52,14 @@ class User extends Authenticatable
     }
 
     public function follower(){
-        return $this->belongsToMany(user::class, 'followers', 'leader_id', 'follower_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'followers', 'leader_id', 'follower_id')->withTimestamps();
     }
 
     public function followings(){
-        return $this->belongsToMany(user::class, 'followers', 'follower_id', 'leader_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'leader_id')->withTimestamps();
     }
 
-    public function isFollowing(user $user){
+    public function isFollowing(User $user){
         return $this->followings->contains($user);
     }
 }
